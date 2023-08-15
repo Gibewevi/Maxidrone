@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User with email and password
+model User {
+  id          Int         @id @default(autoincrement())
+  email       String      @unique
+  password    String
+  properties  Property[] 
+  bills       Bill[]
+}
+
+// Property with its coordinates and inspections
+model Property {
+  id          Int         @id @default(autoincrement())
+  name        String      // Name of the property
+  latitude    Float       // Latitude for Google Map
+  longitude   Float       // Longitude for Google Map
+  userId      Int 
+  user        User        @relation(fields: [userId], references: [id])
+  inspections Inspection[]
+}
+
+// Inspection for each property
+model Inspection {
+  id          Int         @id @default(autoincrement())
+  path        String      // Path to the inspection file
+  date        DateTime    @default(now()) // Inspection date
+  propertyId  Int 
+  property    Property    @relation(fields: [propertyId], references: [id])
+}
+
+// Bill for each user
+model Bill {
+  id       Int           @id @default(autoincrement())
+  amount   Float         // Bill amount
+  date     DateTime      @default(now()) // Bill date
+  pdfUrl   String        // URL to the PDF of the bill
+  userId   Int 
+  user     User          @relation(fields: [userId], references: [id])
+}
