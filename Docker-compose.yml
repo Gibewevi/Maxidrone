@@ -1,0 +1,17 @@
+version: '3.1'
+
+services:
+  maxidone_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: maxidone
+      POSTGRES_PASSWORD: maxidrone
+    ports:
+      - 5434:5432  # Changement de port pour éviter les conflits
+
+  maxidone_adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8082:8080  # Changement de port pour éviter les conflits
